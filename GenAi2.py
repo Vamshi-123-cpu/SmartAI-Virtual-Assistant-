@@ -11,6 +11,58 @@ import pyperclip
 import base64
 from io import StringIO
 
+import os
+import platform
+
+# Detect if running on Streamlit Cloud
+IS_CLOUD = os.getenv('STREAMLIT_SHARING_MODE') is not None or platform.system() == "Linux"
+
+if IS_CLOUD:
+    # Cloud deployment - disable problematic packages
+    print("Running on Streamlit Cloud - Voice features disabled")
+    
+    # Mock the voice functions
+    def speak(text):
+        st.info("🔊 Voice features are not available in cloud deployment")
+        return
+    
+    def stop_speaking():
+        return
+    
+    def listen():
+        st.warning("🎤 Voice input not available in cloud deployment")
+        return ""
+    
+    def speak_windows(text):
+        return False
+    
+    def copy_to_clipboard(text):
+        st.info("📋 Text copied! (Cloud version)")
+        return
+    
+    # Set voice availability
+    TTS_AVAILABLE = False
+    USE_PYTTSX3 = False
+    voice_ids = {"Male": None, "Female": None}
+    engine = None
+    recognizer = None
+    
+else:
+    # Local deployment - import voice packages
+    try:
+        import pyttsx3
+        import speech_recognition as sr
+        import pyperclip
+        import subprocess
+        
+        # Your existing voice initialization code here
+        # (Keep all your existing voice functions)
+        
+    except ImportError as e:
+        st.error(f"Voice packages not available: {e}")
+        TTS_AVAILABLE = False
+        USE_PYTTSX3 = False
+
 # ===== CONFIGURATION =====
 OPENROUTER_API_KEY = "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"
 MODEL_NAME = "mistralai/mistral-7b-instruct"
