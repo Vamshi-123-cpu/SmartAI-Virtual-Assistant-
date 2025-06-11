@@ -1,7 +1,1 @@
-streamlit>=1.28.0
-requests>=2.31.0
-pyttsx3>=2.90
-SpeechRecognition>=3.10.0
-pyperclip>=1.8.2
-pyaudio>=0.2.11
-subprocess32>=3.5.4; python_version<"3.0"
+requests
